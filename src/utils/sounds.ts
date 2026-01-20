@@ -60,23 +60,7 @@ class SoundManager {
   }
 
   async startBackgroundMusic() {
-    if (!this.musicEnabled) return;
-    try {
-      if (this.backgroundMusic) {
-        const status = await this.backgroundMusic.getStatusAsync();
-        if (status.isLoaded) {
-          await this.backgroundMusic.playAsync();
-          return;
-        }
-      }
-      const { sound } = await Audio.Sound.createAsync(
-        require('../../assets/background.mp3'),
-        { shouldPlay: true, isLooping: true, volume: 0.3 }
-      );
-      this.backgroundMusic = sound;
-    } catch {
-      // Music not available
-    }
+    // Background music disabled in Snack version (file too large)
   }
 
   async stopBackgroundMusic() {
