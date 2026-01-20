@@ -1,10 +1,10 @@
 import { Audio } from 'expo-av';
 
-// Audio files hosted on GitHub
+// Audio files hosted on external server
 const SOUND_URLS = {
-  eat: 'https://raw.githubusercontent.com/pmad71/snake/main/assets/eat.mp3',
-  gameOver: 'https://raw.githubusercontent.com/pmad71/snake/main/assets/gameover.mp3',
-  background: 'https://raw.githubusercontent.com/pmad71/snake/main/assets/background.mp3',
+  eat: 'https://h.madrzak.pl/snakesounds/eat.mp3',
+  gameOver: 'https://h.madrzak.pl/snakesounds/gameover.mp3',
+  background: 'https://h.madrzak.pl/snakesounds/background.mp3',
 };
 
 class SoundManager {
