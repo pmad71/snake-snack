@@ -187,7 +187,7 @@ export const useGameLogic = ({ mode = 'CLASSIC', difficulty = 'NORMAL' }: UseGam
     }, 16);
 
     return () => clearInterval(animationFrame);
-  }, [particles.length > 0]);
+  }, [particles.length]);
 
   const applyPowerUp = useCallback((type: PowerUpType, currentSnake: SnakeSegment[]) => {
     const config = POWER_UPS.find(p => p.type === type);
@@ -378,7 +378,7 @@ export const useGameLogic = ({ mode = 'CLASSIC', difficulty = 'NORMAL' }: UseGam
 
       return newSnake;
     });
-  }, [checkCollision, spawnParticles, applyPowerUp, trySpawnPowerUp, activePowerUp, powerUp]);
+  }, [spawnParticles, applyPowerUp, trySpawnPowerUp, activePowerUp, powerUp]);
 
   const startGame = useCallback(() => {
     const config = DIFFICULTIES[difficultyRef.current];

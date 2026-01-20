@@ -46,7 +46,7 @@ export const StartScreen: React.FC<StartScreenProps> = ({ onStart, onHowToPlay }
         useNativeDriver: true,
       }),
     ]).start();
-  }, []);
+  }, [titleAnim, buttonAnim]);
 
   const titleScale = titleAnim.interpolate({
     inputRange: [0, 1],

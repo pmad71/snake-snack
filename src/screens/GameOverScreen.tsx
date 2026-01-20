@@ -47,7 +47,7 @@ export const GameOverScreen: React.FC<GameOverScreenProps> = ({
         useNativeDriver: true,
       }),
     ]).start();
-  }, []);
+  }, [fadeAnim, scaleAnim, buttonsAnim]);
 
   return (
     <View style={styles.container}>

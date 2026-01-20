@@ -67,7 +67,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({
     return () => {
       soundManager.stopBackgroundMusic();
     };
-  }, []);
+  }, [startGame]);
 
   const toggleMusic = async () => {
     const newValue = !musicEnabled;
