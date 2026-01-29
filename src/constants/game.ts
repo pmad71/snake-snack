@@ -61,7 +61,7 @@ export const POWER_UPS: PowerUpConfig[] = [
     color: '#00ccff',
     icon: '🐌',
     name: 'Spowolnienie',
-    chance: 0.25,
+    chance: 0.12,
   },
   {
     type: 'DOUBLE_SCORE',
@@ -69,7 +69,7 @@ export const POWER_UPS: PowerUpConfig[] = [
     color: '#ff66cc',
     icon: '💎',
     name: 'Podwójne pkt',
-    chance: 0.20,
+    chance: 0.12,
   },
   {
     type: 'TRIM',
@@ -77,7 +77,7 @@ export const POWER_UPS: PowerUpConfig[] = [
     color: '#cc66ff',
     icon: '✂️',
     name: 'Skrócenie',
-    chance: 0.20,
+    chance: 0.12,
   },
   {
     type: 'GHOST',
@@ -85,7 +85,7 @@ export const POWER_UPS: PowerUpConfig[] = [
     color: '#aaaaff',
     icon: '👻',
     name: 'Duch',
-    chance: 0.20,
+    chance: 0.12,
   },
   {
     type: 'MAGNET',
@@ -93,7 +93,7 @@ export const POWER_UPS: PowerUpConfig[] = [
     color: '#ff5555',
     icon: '🧲',
     name: 'Magnes',
-    chance: 0.15,
+    chance: 0.10,
   },
   {
     type: 'SHIELD',
@@ -101,6 +101,22 @@ export const POWER_UPS: PowerUpConfig[] = [
     color: '#ffdd00',
     icon: '🛡️',
     name: 'Tarcza',
+    chance: 0.22,
+  },
+  {
+    type: 'TURBO',
+    duration: 4000,
+    color: '#ff8800',
+    icon: '⚡',
+    name: 'Turbo',
+    chance: 0.10,
+  },
+  {
+    type: 'MULTI_FOOD',
+    duration: 8000,
+    color: '#ffaa00',
+    icon: '🍕',
+    name: 'Multi-Food',
     chance: 0.10,
   },
 ];

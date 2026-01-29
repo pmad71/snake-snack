@@ -17,10 +17,12 @@ interface GameBoardProps {
   powerUp?: PowerUp | null;
   activePowerUp?: ActivePowerUp | null;
   activePowerUpRemaining?: number;
+  extraFoods?: Position[];
+  combo?: number;
 }
 
 export const GameBoard = memo(
-  ({ snake, food, particles, score, isPaused, powerUp, activePowerUp, activePowerUpRemaining }: GameBoardProps) => {
+  ({ snake, food, particles, score, isPaused, powerUp, activePowerUp, activePowerUpRemaining, extraFoods, combo }: GameBoardProps) => {
     const boardWidth = GAME_CONFIG.gridWidth * GAME_CONFIG.cellSize;
     const boardHeight = GAME_CONFIG.gridHeight * GAME_CONFIG.cellSize;
 
@@ -34,7 +36,12 @@ export const GameBoard = memo(
             />
           )}
           <Text style={styles.scoreLabel}>WYNIK</Text>
-          <Text style={styles.scoreValue}>{score}</Text>
+          <View style={styles.scoreRow}>
+            <Text style={styles.scoreValue}>{score}</Text>
+            {combo && combo > 1 && (
+              <Text style={styles.comboText}>x{combo}</Text>
+            )}
+          </View>
         </View>
 
         <View
@@ -48,6 +55,9 @@ export const GameBoard = memo(
         >
           <Grid />
           <Food position={food} />
+          {extraFoods && extraFoods.map((pos, index) => (
+            <Food key={`extra-${index}`} position={pos} />
+          ))}
           {powerUp && <PowerUpComponent powerUp={powerUp} />}
           <Snake segments={snake} />
           <ParticleEffect particles={particles} />
@@ -80,10 +90,23 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     letterSpacing: 4,
   },
+  scoreRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
   scoreValue: {
     fontSize: 48,
     color: COLORS.neonGreen,
     fontWeight: 'bold',
+  },
+  comboText: {
+    fontSize: 24,
+    color: '#ff8800',
+    fontWeight: 'bold',
+    marginLeft: 8,
+    textShadowColor: '#ff8800',
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 10,
   },
   board: {
     backgroundColor: 'rgba(0, 20, 10, 0.5)',

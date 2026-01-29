@@ -43,7 +43,7 @@ export interface GameConfig {
 }
 
 // Power-ups
-export type PowerUpType = 'SLOW' | 'DOUBLE_SCORE' | 'TRIM' | 'GHOST' | 'MAGNET' | 'SHIELD';
+export type PowerUpType = 'SLOW' | 'DOUBLE_SCORE' | 'TRIM' | 'GHOST' | 'MAGNET' | 'SHIELD' | 'TURBO' | 'MULTI_FOOD';
 
 export interface PowerUp extends Position {
   type: PowerUpType;

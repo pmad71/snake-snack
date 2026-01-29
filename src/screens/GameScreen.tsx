@@ -1,10 +1,11 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import {
   View,
   StyleSheet,
   TouchableOpacity,
   Text,
   PanResponder,
+  Animated,
 } from 'react-native';
 import { GameBoard } from '../components/GameBoard';
 import { useGameLogic } from '../hooks/useGameLogic';
@@ -27,6 +28,19 @@ export const GameScreen: React.FC<GameScreenProps> = ({
   mode = 'CLASSIC',
   difficulty = 'NORMAL',
 }) => {
+  // Screen shake animation
+  const shakeAnim = useRef(new Animated.Value(0)).current;
+
+  const triggerShake = useCallback((intensity = 8) => {
+    Animated.sequence([
+      Animated.timing(shakeAnim, { toValue: intensity, duration: 40, useNativeDriver: true }),
+      Animated.timing(shakeAnim, { toValue: -intensity, duration: 40, useNativeDriver: true }),
+      Animated.timing(shakeAnim, { toValue: intensity / 2, duration: 40, useNativeDriver: true }),
+      Animated.timing(shakeAnim, { toValue: -intensity / 2, duration: 40, useNativeDriver: true }),
+      Animated.timing(shakeAnim, { toValue: 0, duration: 40, useNativeDriver: true }),
+    ]).start();
+  }, [shakeAnim]);
+
   const {
     snake,
     food,
@@ -37,11 +51,13 @@ export const GameScreen: React.FC<GameScreenProps> = ({
     powerUp,
     activePowerUp,
     activePowerUpRemaining,
+    extraFoods,
+    combo,
     startGame,
     pauseGame,
     resumeGame,
     changeDirection,
-  } = useGameLogic({ mode, difficulty });
+  } = useGameLogic({ mode, difficulty, onShake: triggerShake });
 
   const touchStart = useRef({ x: 0, y: 0 });
   const gameStateRef = useRef(gameState);
@@ -141,7 +157,10 @@ export const GameScreen: React.FC<GameScreenProps> = ({
         </View>
       </View>
 
-      <View style={styles.gameContainer} {...panResponder.panHandlers}>
+      <Animated.View
+        style={[styles.gameContainer, { transform: [{ translateX: shakeAnim }] }]}
+        {...panResponder.panHandlers}
+      >
         <GameBoard
           snake={snake}
           food={food}
@@ -151,8 +170,10 @@ export const GameScreen: React.FC<GameScreenProps> = ({
           powerUp={powerUp}
           activePowerUp={activePowerUp}
           activePowerUpRemaining={activePowerUpRemaining}
+          extraFoods={extraFoods}
+          combo={combo}
         />
-      </View>
+      </Animated.View>
 
     </View>
   );

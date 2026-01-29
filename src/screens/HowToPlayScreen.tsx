@@ -104,6 +104,29 @@ export const HowToPlayScreen: React.FC<HowToPlayScreenProps> = ({ onBack }) => {
               <Text style={styles.powerUpDesc}>Nieśmiertelność - nie zginiesz od ogona</Text>
             </View>
           </View>
+
+          <View style={styles.powerUpRow}>
+            <Text style={styles.powerUpIcon}>⚡</Text>
+            <View style={styles.powerUpInfo}>
+              <Text style={styles.powerUpName}>Turbo</Text>
+              <Text style={styles.powerUpDesc}>Wąż porusza się 2x szybciej przez 4s</Text>
+            </View>
+          </View>
+
+          <View style={styles.powerUpRow}>
+            <Text style={styles.powerUpIcon}>🍕</Text>
+            <View style={styles.powerUpInfo}>
+              <Text style={styles.powerUpName}>Multi-Food</Text>
+              <Text style={styles.powerUpDesc}>5 jedzenia na planszy przez 8s</Text>
+            </View>
+          </View>
+        </View>
+
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>COMBO</Text>
+          <Text style={styles.text}>Jedz szybko (poniżej 3s) aby budować combo!</Text>
+          <Text style={styles.text}>Mnożnik punktów: x1 → x2 → x3 → x4 (max)</Text>
+          <Text style={styles.text}>Combo resetuje się po 3s bez jedzenia.</Text>
         </View>
       </ScrollView>
 
