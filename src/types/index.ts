@@ -21,7 +21,7 @@ export type Direction = 'UP' | 'DOWN' | 'LEFT' | 'RIGHT';
 
 export type GameState = 'IDLE' | 'PLAYING' | 'PAUSED' | 'GAME_OVER';
 
-export type Screen = 'START' | 'GAME' | 'GAME_OVER' | 'HOW_TO_PLAY';
+export type Screen = 'START' | 'GAME' | 'GAME_OVER' | 'HOW_TO_PLAY' | 'LEADERBOARD';
 
 export type GameMode = 'CLASSIC' | 'INFINITE';
 export type Difficulty = 'EASY' | 'NORMAL' | 'HARD';
@@ -57,9 +57,19 @@ export interface ActivePowerUp {
 
 export interface PowerUpConfig {
   type: PowerUpType;
-  duration: number;
+  duration: number;      // ms (0 = natychmiastowy)
   color: string;
   icon: string;
   name: string;
-  chance: number;
+  chance: number;        // szansa pojawienia się (0-1)
+}
+
+// Leaderboard
+export interface LeaderboardEntry {
+  id: string;
+  nickname: string;
+  score: number;
+  mode: GameMode;
+  difficulty: Difficulty;
+  date: string;
 }

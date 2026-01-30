@@ -1,19 +1,24 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   View,
   Text,
   StyleSheet,
   TouchableOpacity,
   Animated,
-  Easing,
+  ActivityIndicator,
 } from 'react-native';
 import { COLORS } from '../constants/game';
+import { GameMode, Difficulty } from '../types';
+import { submitScore } from '../utils/api';
 
 interface GameOverScreenProps {
   score: number;
   isNewHighScore: boolean;
   onRestart: () => void;
   onMenu: () => void;
+  playerNickname?: string | null;
+  gameMode: GameMode;
+  difficulty: Difficulty;
 }
 
 export const GameOverScreen: React.FC<GameOverScreenProps> = ({
@@ -21,10 +26,17 @@ export const GameOverScreen: React.FC<GameOverScreenProps> = ({
   isNewHighScore,
   onRestart,
   onMenu,
+  playerNickname,
+  gameMode,
+  difficulty,
 }) => {
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const scaleAnim = useRef(new Animated.Value(0.5)).current;
   const buttonsAnim = useRef(new Animated.Value(0)).current;
+
+  const [submitting, setSubmitting] = useState(false);
+  const [rankPosition, setRankPosition] = useState<number | null>(null);
+  const [submitError, setSubmitError] = useState(false);
 
   useEffect(() => {
     Animated.sequence([
@@ -47,7 +59,30 @@ export const GameOverScreen: React.FC<GameOverScreenProps> = ({
         useNativeDriver: true,
       }),
     ]).start();
-  }, [fadeAnim, scaleAnim, buttonsAnim]);
+
+    // Submit score to leaderboard
+    if (playerNickname && score > 0) {
+      setSubmitting(true);
+      submitScore(playerNickname, score, gameMode, difficulty)
+        .then((result) => {
+          if (result.success && result.position) {
+            setRankPosition(result.position);
+          } else {
+            setSubmitError(true);
+          }
+        })
+        .catch(() => setSubmitError(true))
+        .finally(() => setSubmitting(false));
+    }
+  }, []);
+
+  const getRankText = () => {
+    if (!rankPosition) return null;
+    if (rankPosition === 1) return 'JESTEŚ LIDEREM!';
+    if (rankPosition <= 3) return `TOP 3 - MIEJSCE ${rankPosition}!`;
+    if (rankPosition <= 10) return `TOP 10 - MIEJSCE ${rankPosition}`;
+    return `MIEJSCE ${rankPosition} W RANKINGU`;
+  };
 
   return (
     <View style={styles.container}>
@@ -77,6 +112,29 @@ export const GameOverScreen: React.FC<GameOverScreenProps> = ({
           >
             {score}
           </Text>
+
+          {/* Rank position */}
+          {submitting ? (
+            <View style={styles.rankContainer}>
+              <ActivityIndicator size="small" color={COLORS.neonGreen} />
+              <Text style={styles.rankLoading}>Zapisywanie wyniku...</Text>
+            </View>
+          ) : rankPosition ? (
+            <View style={styles.rankContainer}>
+              <Text
+                style={[
+                  styles.rankText,
+                  rankPosition <= 3 && styles.rankTextTop3,
+                ]}
+              >
+                {getRankText()}
+              </Text>
+            </View>
+          ) : submitError ? (
+            <View style={styles.rankContainer}>
+              <Text style={styles.rankError}>Nie udało się zapisać wyniku</Text>
+            </View>
+          ) : null}
         </View>
 
         <Animated.View
@@ -154,6 +212,30 @@ const styles = StyleSheet.create({
   },
   scoreValueHighlight: {
     color: COLORS.neonGreen,
+  },
+  rankContainer: {
+    marginTop: 20,
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: 8,
+  },
+  rankLoading: {
+    fontSize: 12,
+    color: COLORS.textSecondary,
+  },
+  rankText: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: COLORS.neonBlue,
+    letterSpacing: 2,
+  },
+  rankTextTop3: {
+    color: COLORS.neonGreen,
+    fontSize: 16,
+  },
+  rankError: {
+    fontSize: 12,
+    color: COLORS.textSecondary,
   },
   buttonsContainer: {
     width: '100%',

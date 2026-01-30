@@ -44,3 +44,20 @@ export const setMusicEnabled = async (enabled: boolean): Promise<void> => {
     console.error('Error saving music setting:', error);
   }
 };
+
+export const getNickname = async (): Promise<string | null> => {
+  try {
+    return await AsyncStorage.getItem(STORAGE_KEYS.nickname);
+  } catch (error) {
+    console.error('Error reading nickname:', error);
+    return null;
+  }
+};
+
+export const setNickname = async (nickname: string): Promise<void> => {
+  try {
+    await AsyncStorage.setItem(STORAGE_KEYS.nickname, nickname);
+  } catch (error) {
+    console.error('Error saving nickname:', error);
+  }
+};

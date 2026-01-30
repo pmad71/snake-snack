@@ -15,9 +15,10 @@ import { GameMode, Difficulty } from '../types';
 interface StartScreenProps {
   onStart: (mode: GameMode, difficulty: Difficulty) => void;
   onHowToPlay: () => void;
+  onLeaderboard: () => void;
 }
 
-export const StartScreen: React.FC<StartScreenProps> = ({ onStart, onHowToPlay }) => {
+export const StartScreen: React.FC<StartScreenProps> = ({ onStart, onHowToPlay, onLeaderboard }) => {
   const [highScore, setHighScore] = useState(0);
   const [musicEnabled, setMusicEnabled] = useState(true);
   const [selectedMode, setSelectedMode] = useState<GameMode>('CLASSIC');
@@ -46,7 +47,7 @@ export const StartScreen: React.FC<StartScreenProps> = ({ onStart, onHowToPlay }
         useNativeDriver: true,
       }),
     ]).start();
-  }, [titleAnim, buttonAnim]);
+  }, []);
 
   const titleScale = titleAnim.interpolate({
     inputRange: [0, 1],
@@ -71,9 +72,14 @@ export const StartScreen: React.FC<StartScreenProps> = ({ onStart, onHowToPlay }
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity style={styles.musicButton} onPress={toggleMusic}>
-        <Text style={styles.musicButtonText}>{musicEnabled ? '🎵' : '🔇'}</Text>
-      </TouchableOpacity>
+      <View style={styles.topButtons}>
+        <TouchableOpacity style={styles.leaderboardButton} onPress={onLeaderboard}>
+          <Text style={styles.leaderboardButtonText}>🏆</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.musicButton} onPress={toggleMusic}>
+          <Text style={styles.musicButtonText}>{musicEnabled ? '🎵' : '🔇'}</Text>
+        </TouchableOpacity>
+      </View>
       <View style={styles.content}>
         <Animated.View
           style={[
@@ -86,6 +92,7 @@ export const StartScreen: React.FC<StartScreenProps> = ({ onStart, onHowToPlay }
         >
           <Text style={styles.title}>SNAKE</Text>
           <Text style={styles.subtitle}>NEON EDITION</Text>
+          <Text style={styles.specialVersion}>IGNACY SPECIAL VERSION</Text>
         </Animated.View>
 
         <Animated.View
@@ -218,6 +225,13 @@ const styles = StyleSheet.create({
     letterSpacing: 12,
     marginTop: 10,
   },
+  specialVersion: {
+    fontSize: 10,
+    color: COLORS.neonGreen,
+    letterSpacing: 3,
+    marginTop: 8,
+    textTransform: 'uppercase',
+  },
   buttonContainer: {
     alignItems: 'center',
     width: '100%',
@@ -344,10 +358,28 @@ const styles = StyleSheet.create({
     color: COLORS.textSecondary,
     letterSpacing: 1,
   },
-  musicButton: {
+  topButtons: {
     position: 'absolute',
     top: 50,
     right: 20,
+    flexDirection: 'row',
+    gap: 10,
+    zIndex: 10,
+  },
+  leaderboardButton: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    borderWidth: 1,
+    borderColor: COLORS.neonGreen,
+    backgroundColor: 'rgba(0, 255, 136, 0.1)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  leaderboardButtonText: {
+    fontSize: 20,
+  },
+  musicButton: {
     width: 44,
     height: 44,
     borderRadius: 22,
@@ -356,7 +388,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(204, 0, 255, 0.1)',
     justifyContent: 'center',
     alignItems: 'center',
-    zIndex: 10,
   },
   musicButtonText: {
     fontSize: 20,
