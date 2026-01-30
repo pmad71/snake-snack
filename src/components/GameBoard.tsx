@@ -44,6 +44,8 @@ export const GameBoard = memo(
           </View>
         </View>
 
+        <Text style={styles.specialVersion}>KLARA SPECIAL VERSION</Text>
+
         <View
           style={[
             styles.board,
@@ -107,6 +109,13 @@ const styles = StyleSheet.create({
     textShadowColor: '#ff8800',
     textShadowOffset: { width: 0, height: 0 },
     textShadowRadius: 10,
+  },
+  specialVersion: {
+    fontSize: 10,
+    color: COLORS.neonPink,
+    letterSpacing: 2,
+    marginBottom: 10,
+    textTransform: 'uppercase',
   },
   board: {
     backgroundColor: 'rgba(0, 20, 10, 0.5)',
