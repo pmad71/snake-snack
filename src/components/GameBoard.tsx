@@ -44,7 +44,7 @@ export const GameBoard = memo(
           </View>
         </View>
 
-        <Text style={styles.specialVersion}>IGNACY SPECIAL VERSION</Text>
+        <Text style={styles.specialVersion}>KLARA SPECIAL VERSION</Text>
 
         <View
           style={[

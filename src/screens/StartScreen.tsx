@@ -93,7 +93,7 @@ export const StartScreen: React.FC<StartScreenProps> = ({ onStart, onHowToPlay, 
         >
           <Text style={styles.title}>SNAKE</Text>
           <Text style={styles.subtitle}>NEON EDITION</Text>
-          <Text style={styles.specialVersion}>IGNACY SPECIAL VERSION</Text>
+          <Text style={styles.specialVersion}>KLARA SPECIAL VERSION</Text>
         </Animated.View>
 
         <Animated.View
