@@ -162,6 +162,20 @@ export const HowToPlayScreen: React.FC<HowToPlayScreenProps> = ({ onBack }) => {
               <Text style={styles.powerUpDesc}>Stwórz pokój i podaj kod znajomemu</Text>
             </View>
           </View>
+          <View style={styles.powerUpRow}>
+            <Text style={styles.powerUpIcon}>🗺️</Text>
+            <View style={styles.powerUpInfo}>
+              <Text style={styles.powerUpName}>Duża arena</Text>
+              <Text style={styles.powerUpDesc}>Plansza 4x większa! Kamera podąża za Tobą</Text>
+            </View>
+          </View>
+          <View style={styles.powerUpRow}>
+            <Text style={styles.powerUpIcon}>📍</Text>
+            <View style={styles.powerUpInfo}>
+              <Text style={styles.powerUpName}>Mini-mapa</Text>
+              <Text style={styles.powerUpDesc}>Widzisz pozycję przeciwnika w rogu ekranu</Text>
+            </View>
+          </View>
           <Text style={styles.textFun}>Kto pierwszy do 200 punktów wygrywa! 🏆</Text>
         </View>
       </ScrollView>

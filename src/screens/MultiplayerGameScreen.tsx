@@ -212,6 +212,8 @@ export const MultiplayerGameScreen: React.FC<MultiplayerGameScreenProps> = ({
             snakes={gameState.snakes}
             food={gameState.food}
             myNickname={nickname}
+            boardWidth={gameState.boardWidth || 24}
+            boardHeight={gameState.boardHeight || 36}
           />
         )}
       </Animated.View>

@@ -29,6 +29,11 @@ export interface GameStateData {
   food: { x: number; y: number } | null;
   powerUp: any | null;
   state: string;
+  // Board dimensions (2x2 = 24x36)
+  boardWidth: number;
+  boardHeight: number;
+  viewportWidth: number;
+  viewportHeight: number;
 }
 
 export interface GameOverData {
