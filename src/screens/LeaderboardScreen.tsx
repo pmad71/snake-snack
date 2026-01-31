@@ -82,6 +82,21 @@ export const LeaderboardScreen: React.FC<LeaderboardScreenProps> = ({
     }
   };
 
+  const formatDate = (dateString: string | undefined) => {
+    if (!dateString) return '';
+    try {
+      const date = new Date(dateString);
+      const day = date.getDate().toString().padStart(2, '0');
+      const month = (date.getMonth() + 1).toString().padStart(2, '0');
+      const year = date.getFullYear();
+      const hours = date.getHours().toString().padStart(2, '0');
+      const minutes = date.getMinutes().toString().padStart(2, '0');
+      return `${day}.${month}.${year} ${hours}:${minutes}`;
+    } catch {
+      return '';
+    }
+  };
+
   const renderItem = ({ item, index }: { item: LeaderboardEntry; index: number }) => {
     const position = index + 1;
     const isPlayer = playerNickname && item.nickname === playerNickname;
@@ -97,6 +112,9 @@ export const LeaderboardScreen: React.FC<LeaderboardScreenProps> = ({
           <Text style={[styles.nickname, isPlayer && styles.nicknameHighlight]}>
             {item.nickname}
           </Text>
+          {item.date && (
+            <Text style={styles.dateText}>{formatDate(item.date)}</Text>
+          )}
           <Text style={styles.details}>
             {getModeLabel(item.mode)} • {getDifficultyLabel(item.difficulty)}
           </Text>
@@ -329,10 +347,16 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     color: COLORS.text,
-    marginBottom: 2,
+    marginBottom: 1,
   },
   nicknameHighlight: {
     color: COLORS.neonGreen,
+  },
+  dateText: {
+    fontSize: 9,
+    color: COLORS.textSecondary,
+    opacity: 0.7,
+    marginBottom: 2,
   },
   details: {
     fontSize: 11,
