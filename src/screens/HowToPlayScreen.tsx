@@ -128,6 +128,42 @@ export const HowToPlayScreen: React.FC<HowToPlayScreenProps> = ({ onBack }) => {
           <Text style={styles.text}>Mnożnik punktów: x1 → x2 → x3 → x4 (max)</Text>
           <Text style={styles.text}>Combo resetuje się po 3s bez jedzenia.</Text>
         </View>
+
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>🎨 SKLEP</Text>
+          <Text style={styles.text}>Za każdy punkt dostajesz monetkę! 🪙</Text>
+          <Text style={styles.text}>Monety zbierasz z każdej gry - nie przepadają!</Text>
+          <Text style={styles.textHighlight}>Co można kupić?</Text>
+          <View style={styles.powerUpRow}>
+            <Text style={styles.powerUpIcon}>🐍</Text>
+            <View style={styles.powerUpInfo}>
+              <Text style={styles.powerUpName}>Skórki węża</Text>
+              <Text style={styles.powerUpDesc}>Zmień kolor swojego węża na różowy, niebieski, złoty i więcej!</Text>
+            </View>
+          </View>
+          <Text style={styles.text}>Wejdź do sklepu przez przycisk 🎨 na ekranie głównym.</Text>
+          <Text style={styles.textFun}>Graj więcej = więcej monet = więcej style'u! 😎</Text>
+        </View>
+
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>👥 MULTIPLAYER</Text>
+          <Text style={styles.text}>Graj z kolegą online!</Text>
+          <View style={styles.powerUpRow}>
+            <Text style={styles.powerUpIcon}>⚡</Text>
+            <View style={styles.powerUpInfo}>
+              <Text style={styles.powerUpName}>Szybka gra</Text>
+              <Text style={styles.powerUpDesc}>Znajdź losowego przeciwnika i walczcie!</Text>
+            </View>
+          </View>
+          <View style={styles.powerUpRow}>
+            <Text style={styles.powerUpIcon}>🔑</Text>
+            <View style={styles.powerUpInfo}>
+              <Text style={styles.powerUpName}>Prywatny pokój</Text>
+              <Text style={styles.powerUpDesc}>Stwórz pokój i podaj kod znajomemu</Text>
+            </View>
+          </View>
+          <Text style={styles.textFun}>Kto pierwszy do 200 punktów wygrywa! 🏆</Text>
+        </View>
       </ScrollView>
 
       <TouchableOpacity style={styles.backButton} onPress={onBack}>
@@ -170,6 +206,21 @@ const styles = StyleSheet.create({
     color: COLORS.text,
     lineHeight: 22,
     marginBottom: 4,
+  },
+  textHighlight: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: COLORS.neonGreen,
+    lineHeight: 22,
+    marginTop: 8,
+    marginBottom: 8,
+  },
+  textFun: {
+    fontSize: 14,
+    color: '#ffd700',
+    lineHeight: 22,
+    marginTop: 8,
+    fontStyle: 'italic',
   },
   powerUpRow: {
     flexDirection: 'row',

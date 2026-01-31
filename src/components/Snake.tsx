@@ -5,6 +5,7 @@ import { GAME_CONFIG, COLORS } from '../constants/game';
 
 interface SnakeProps {
   segments: SnakeSegment[];
+  skinColors?: [string, string]; // [headColor, tailColor]
 }
 
 const interpolateColor = (
@@ -31,9 +32,15 @@ const interpolateColor = (
 };
 
 const SnakeSegmentView = memo(
-  ({ segment, index, total }: { segment: SnakeSegment; index: number; total: number }) => {
+  ({ segment, index, total, headColor, tailColor }: {
+    segment: SnakeSegment;
+    index: number;
+    total: number;
+    headColor: string;
+    tailColor: string;
+  }) => {
     const factor = total > 1 ? index / (total - 1) : 0;
-    const color = interpolateColor(COLORS.snakeHead, COLORS.snakeTail, factor);
+    const color = interpolateColor(headColor, tailColor, factor);
     const isHead = index === 0;
     const size = GAME_CONFIG.cellSize - 2;
 
@@ -62,7 +69,10 @@ const SnakeSegmentView = memo(
   }
 );
 
-export const Snake = memo(({ segments }: SnakeProps) => {
+export const Snake = memo(({ segments, skinColors }: SnakeProps) => {
+  const headColor = skinColors?.[0] || COLORS.snakeHead;
+  const tailColor = skinColors?.[1] || COLORS.snakeTail;
+
   return (
     <>
       {segments.map((segment, index) => (
@@ -71,6 +81,8 @@ export const Snake = memo(({ segments }: SnakeProps) => {
           segment={segment}
           index={index}
           total={segments.length}
+          headColor={headColor}
+          tailColor={tailColor}
         />
       ))}
     </>

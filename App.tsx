@@ -6,6 +6,7 @@ import { GameScreen } from './src/screens/GameScreen';
 import { GameOverScreen } from './src/screens/GameOverScreen';
 import { HowToPlayScreen } from './src/screens/HowToPlayScreen';
 import { LeaderboardScreen } from './src/screens/LeaderboardScreen';
+import { ShopScreen } from './src/screens/ShopScreen';
 import { MultiplayerMenuScreen } from './src/screens/MultiplayerMenuScreen';
 import { MultiplayerLobbyScreen } from './src/screens/MultiplayerLobbyScreen';
 import { MultiplayerGameScreen } from './src/screens/MultiplayerGameScreen';
@@ -82,6 +83,10 @@ export default function App() {
     setCurrentScreen('MULTIPLAYER_MENU');
   };
 
+  const handleShop = () => {
+    setCurrentScreen('SHOP');
+  };
+
   // Multiplayer handlers
   const handleMultiplayerJoinLobby = (roomCode: string, players: string[], isHost: boolean) => {
     setMultiplayerRoomCode(roomCode);
@@ -114,6 +119,7 @@ export default function App() {
             onHowToPlay={handleHowToPlay}
             onLeaderboard={handleLeaderboard}
             onMultiplayer={handleMultiplayer}
+            onShop={handleShop}
           />
         );
       case 'GAME':
@@ -133,15 +139,17 @@ export default function App() {
             isNewHighScore={isNewHighScore}
             onRestart={handleRestart}
             onMenu={handleBackToMenu}
-            mode={gameMode}
+            playerNickname={nickname}
+            gameMode={gameMode}
             difficulty={difficulty}
-            leaderboardPosition={leaderboardPosition}
           />
         );
       case 'HOW_TO_PLAY':
         return <HowToPlayScreen onBack={handleBackToMenu} />;
       case 'LEADERBOARD':
         return <LeaderboardScreen onBack={handleBackToMenu} />;
+      case 'SHOP':
+        return <ShopScreen onBack={handleBackToMenu} />;
       case 'MULTIPLAYER_MENU':
         return (
           <MultiplayerMenuScreen
@@ -189,6 +197,7 @@ export default function App() {
             onHowToPlay={handleHowToPlay}
             onLeaderboard={handleLeaderboard}
             onMultiplayer={handleMultiplayer}
+            onShop={handleShop}
           />
         );
     }

@@ -12,9 +12,10 @@ import { useGameLogic } from '../hooks/useGameLogic';
 import { detectSwipe } from '../hooks/useSwipeControls';
 import { COLORS } from '../constants/game';
 import { soundManager } from '../utils/sounds';
-import { getMusicEnabled, setMusicEnabled as saveMusicEnabled } from '../utils/storage';
+import { getMusicEnabled, setMusicEnabled as saveMusicEnabled, getActiveSkin } from '../utils/storage';
 import { submitScore } from '../utils/api';
 import { Direction, GameMode, Difficulty } from '../types';
+import { getSkinColors } from '../constants/skins';
 
 interface GameScreenProps {
   onGameOver: (score: number, isNewHighScore: boolean, position: number | null) => void;
@@ -66,6 +67,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({
   const gameStateRef = useRef(gameState);
   const changeDirectionRef = useRef(changeDirection);
   const [musicEnabled, setMusicEnabled] = useState(true);
+  const [skinColors, setSkinColors] = useState<[string, string]>(['#00ff88', '#004422']);
 
   // Keep refs updated
   useEffect(() => {
@@ -81,6 +83,9 @@ export const GameScreen: React.FC<GameScreenProps> = ({
     getMusicEnabled().then((enabled) => {
       setMusicEnabled(enabled);
       soundManager.setMusicEnabled(enabled);
+    });
+    getActiveSkin().then((skinId) => {
+      setSkinColors(getSkinColors(skinId));
     });
     startGame();
 
@@ -186,6 +191,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({
           activePowerUpRemaining={activePowerUpRemaining}
           extraFoods={extraFoods}
           combo={combo}
+          skinColors={skinColors}
         />
       </Animated.View>
 

@@ -10,6 +10,7 @@ import {
 import { COLORS } from '../constants/game';
 import { GameMode, Difficulty } from '../types';
 import { submitScore } from '../utils/api';
+import { addCoins } from '../utils/storage';
 
 interface GameOverScreenProps {
   score: number;
@@ -37,6 +38,7 @@ export const GameOverScreen: React.FC<GameOverScreenProps> = ({
   const [submitting, setSubmitting] = useState(false);
   const [rankPosition, setRankPosition] = useState<number | null>(null);
   const [submitError, setSubmitError] = useState(false);
+  const [coinsEarned, setCoinsEarned] = useState(0);
 
   useEffect(() => {
     Animated.sequence([
@@ -59,6 +61,12 @@ export const GameOverScreen: React.FC<GameOverScreenProps> = ({
         useNativeDriver: true,
       }),
     ]).start();
+
+    // Add coins (1:1 with score)
+    if (score > 0) {
+      setCoinsEarned(score);
+      addCoins(score);
+    }
 
     // Submit score to leaderboard
     if (playerNickname && score > 0) {
@@ -112,6 +120,14 @@ export const GameOverScreen: React.FC<GameOverScreenProps> = ({
           >
             {score}
           </Text>
+
+          {/* Coins earned */}
+          {coinsEarned > 0 && (
+            <View style={styles.coinsEarnedContainer}>
+              <Text style={styles.coinIcon}>🪙</Text>
+              <Text style={styles.coinsEarnedText}>+{coinsEarned}</Text>
+            </View>
+          )}
 
           {/* Rank position */}
           {submitting ? (
@@ -212,6 +228,26 @@ const styles = StyleSheet.create({
   },
   scoreValueHighlight: {
     color: COLORS.neonGreen,
+  },
+  coinsEarnedContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 15,
+    backgroundColor: 'rgba(255, 215, 0, 0.15)',
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 215, 0, 0.3)',
+  },
+  coinIcon: {
+    fontSize: 18,
+    marginRight: 6,
+  },
+  coinsEarnedText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#ffd700',
   },
   rankContainer: {
     marginTop: 20,

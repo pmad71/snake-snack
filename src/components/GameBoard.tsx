@@ -19,10 +19,11 @@ interface GameBoardProps {
   activePowerUpRemaining?: number;
   extraFoods?: Position[];
   combo?: number;
+  skinColors?: [string, string];
 }
 
 export const GameBoard = memo(
-  ({ snake, food, particles, score, isPaused, powerUp, activePowerUp, activePowerUpRemaining, extraFoods, combo }: GameBoardProps) => {
+  ({ snake, food, particles, score, isPaused, powerUp, activePowerUp, activePowerUpRemaining, extraFoods, combo, skinColors }: GameBoardProps) => {
     const boardWidth = GAME_CONFIG.gridWidth * GAME_CONFIG.cellSize;
     const boardHeight = GAME_CONFIG.gridHeight * GAME_CONFIG.cellSize;
 
@@ -44,7 +45,7 @@ export const GameBoard = memo(
           </View>
         </View>
 
-        <Text style={styles.specialVersion}>KLARA SPECIAL VERSION</Text>
+        <Text style={styles.specialVersion}>IGNACY SPECIAL VERSION</Text>
 
         <View
           style={[
@@ -61,7 +62,7 @@ export const GameBoard = memo(
             <Food key={`extra-${index}`} position={pos} />
           ))}
           {powerUp && <PowerUpComponent powerUp={powerUp} />}
-          <Snake segments={snake} />
+          <Snake segments={snake} skinColors={skinColors} />
           <ParticleEffect particles={particles} />
 
           {isPaused && (

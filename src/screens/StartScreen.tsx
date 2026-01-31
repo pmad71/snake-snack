@@ -8,7 +8,7 @@ import {
   Easing,
 } from 'react-native';
 import { COLORS, DIFFICULTIES } from '../constants/game';
-import { getHighScore, getMusicEnabled, setMusicEnabled as saveMusicEnabled } from '../utils/storage';
+import { getHighScore, getMusicEnabled, setMusicEnabled as saveMusicEnabled, getCoins } from '../utils/storage';
 import { soundManager } from '../utils/sounds';
 import { GameMode, Difficulty } from '../types';
 
@@ -17,10 +17,12 @@ interface StartScreenProps {
   onHowToPlay: () => void;
   onLeaderboard: () => void;
   onMultiplayer: () => void;
+  onShop: () => void;
 }
 
-export const StartScreen: React.FC<StartScreenProps> = ({ onStart, onHowToPlay, onLeaderboard, onMultiplayer }) => {
+export const StartScreen: React.FC<StartScreenProps> = ({ onStart, onHowToPlay, onLeaderboard, onMultiplayer, onShop }) => {
   const [highScore, setHighScore] = useState(0);
+  const [coins, setCoins] = useState(0);
   const [musicEnabled, setMusicEnabled] = useState(true);
   const [selectedMode, setSelectedMode] = useState<GameMode>('CLASSIC');
   const [selectedDifficulty, setSelectedDifficulty] = useState<Difficulty>('NORMAL');
@@ -29,6 +31,7 @@ export const StartScreen: React.FC<StartScreenProps> = ({ onStart, onHowToPlay, 
 
   useEffect(() => {
     getHighScore().then(setHighScore);
+    getCoins().then(setCoins);
     getMusicEnabled().then((enabled) => {
       setMusicEnabled(enabled);
       soundManager.setMusicEnabled(enabled);
@@ -74,6 +77,13 @@ export const StartScreen: React.FC<StartScreenProps> = ({ onStart, onHowToPlay, 
   return (
     <View style={styles.container}>
       <View style={styles.topButtons}>
+        <View style={styles.coinsContainer}>
+          <Text style={styles.coinIcon}>🪙</Text>
+          <Text style={styles.coinsText}>{coins}</Text>
+        </View>
+        <TouchableOpacity style={styles.shopButton} onPress={onShop}>
+          <Text style={styles.shopButtonText}>🎨</Text>
+        </TouchableOpacity>
         <TouchableOpacity style={styles.leaderboardButton} onPress={onLeaderboard}>
           <Text style={styles.leaderboardButtonText}>🏆</Text>
         </TouchableOpacity>
@@ -93,7 +103,7 @@ export const StartScreen: React.FC<StartScreenProps> = ({ onStart, onHowToPlay, 
         >
           <Text style={styles.title}>SNAKE</Text>
           <Text style={styles.subtitle}>NEON EDITION</Text>
-          <Text style={styles.specialVersion}>KLARA SPECIAL VERSION</Text>
+          <Text style={styles.specialVersion}>IGNACY SPECIAL VERSION</Text>
         </Animated.View>
 
         <Animated.View
@@ -396,6 +406,39 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: 10,
     zIndex: 10,
+    alignItems: 'center',
+  },
+  coinsContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(255, 215, 0, 0.15)',
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 215, 0, 0.3)',
+  },
+  coinIcon: {
+    fontSize: 14,
+    marginRight: 4,
+  },
+  coinsText: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: '#ffd700',
+  },
+  shopButton: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    borderWidth: 1,
+    borderColor: '#ffd700',
+    backgroundColor: 'rgba(255, 215, 0, 0.1)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  shopButtonText: {
+    fontSize: 20,
   },
   leaderboardButton: {
     width: 44,

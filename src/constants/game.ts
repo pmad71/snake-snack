@@ -53,6 +53,9 @@ export const STORAGE_KEYS = {
   soundEnabled: '@snake_sound_enabled',
   musicEnabled: '@snake_music_enabled',
   nickname: '@snake_nickname',
+  coins: '@snake_coins',
+  ownedSkins: '@snake_owned_skins',
+  activeSkin: '@snake_active_skin',
 };
 
 // Power-ups configuration

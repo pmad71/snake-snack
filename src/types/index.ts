@@ -27,6 +27,7 @@ export type Screen =
   | 'GAME_OVER'
   | 'HOW_TO_PLAY'
   | 'LEADERBOARD'
+  | 'SHOP'
   | 'MULTIPLAYER_MENU'
   | 'MULTIPLAYER_LOBBY'
   | 'MULTIPLAYER_GAME'
@@ -122,4 +123,13 @@ export interface MultiplayerGameResult {
   winner: string | null;
   reason: string;
   scores: Array<{ nickname: string; score: number; alive: boolean }>;
+}
+
+// Skins
+export interface SnakeSkin {
+  id: string;
+  name: string;
+  price: number;
+  colors: [string, string]; // [headColor, tailColor]
+  description: string;
 }
