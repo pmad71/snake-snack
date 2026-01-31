@@ -13,20 +13,23 @@ import { detectSwipe } from '../hooks/useSwipeControls';
 import { COLORS } from '../constants/game';
 import { soundManager } from '../utils/sounds';
 import { getMusicEnabled, setMusicEnabled as saveMusicEnabled } from '../utils/storage';
+import { submitScore } from '../utils/api';
 import { Direction, GameMode, Difficulty } from '../types';
 
 interface GameScreenProps {
-  onGameOver: (score: number, isNewHighScore: boolean) => void;
-  onBack: () => void;
+  onGameOver: (score: number, isNewHighScore: boolean, position: number | null) => void;
+  onExit: () => void;
   mode?: GameMode;
   difficulty?: Difficulty;
+  nickname: string;
 }
 
 export const GameScreen: React.FC<GameScreenProps> = ({
   onGameOver,
-  onBack,
+  onExit,
   mode = 'CLASSIC',
   difficulty = 'NORMAL',
+  nickname,
 }) => {
   // Screen shake animation
   const shakeAnim = useRef(new Animated.Value(0)).current;
@@ -64,6 +67,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({
   const changeDirectionRef = useRef(changeDirection);
   const [musicEnabled, setMusicEnabled] = useState(true);
 
+  // Keep refs updated
   useEffect(() => {
     gameStateRef.current = gameState;
   }, [gameState]);
@@ -83,7 +87,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({
     return () => {
       soundManager.stopBackgroundMusic();
     };
-  }, [startGame]);
+  }, []);
 
   const toggleMusic = async () => {
     const newValue = !musicEnabled;
@@ -97,11 +101,21 @@ export const GameScreen: React.FC<GameScreenProps> = ({
 
   useEffect(() => {
     if (gameState === 'GAME_OVER') {
-      setTimeout(() => {
-        onGameOver(score, isNewHighScore);
-      }, 500);
+      const submitAndNotify = async () => {
+        let position: number | null = null;
+        try {
+          const result = await submitScore(nickname, score, mode, difficulty);
+          if (result.success && result.position) {
+            position = result.position;
+          }
+        } catch (e) {
+          console.error('Failed to submit score:', e);
+        }
+        onGameOver(score, isNewHighScore, position);
+      };
+      setTimeout(submitAndNotify, 500);
     }
-  }, [gameState, score, isNewHighScore, onGameOver]);
+  }, [gameState, score, isNewHighScore, onGameOver, nickname, mode, difficulty]);
 
   const handleSwipe = (direction: Direction) => {
     if (gameStateRef.current === 'PLAYING') {
@@ -137,7 +151,7 @@ export const GameScreen: React.FC<GameScreenProps> = ({
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <TouchableOpacity style={styles.backButton} onPress={onBack}>
+        <TouchableOpacity style={styles.backButton} onPress={onExit}>
           <Text style={styles.backButtonText}>✕</Text>
         </TouchableOpacity>
 

@@ -30,7 +30,7 @@ export const Food = memo(({ position }: FoodProps) => {
 
     pulseAnimation.start();
     return () => pulseAnimation.stop();
-  }, [pulseAnim]);
+  }, []);
 
   const size = GAME_CONFIG.cellSize - 4;
   const centerX = position.x * GAME_CONFIG.cellSize + 2;

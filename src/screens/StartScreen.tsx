@@ -16,9 +16,10 @@ interface StartScreenProps {
   onStart: (mode: GameMode, difficulty: Difficulty) => void;
   onHowToPlay: () => void;
   onLeaderboard: () => void;
+  onMultiplayer: () => void;
 }
 
-export const StartScreen: React.FC<StartScreenProps> = ({ onStart, onHowToPlay, onLeaderboard }) => {
+export const StartScreen: React.FC<StartScreenProps> = ({ onStart, onHowToPlay, onLeaderboard, onMultiplayer }) => {
   const [highScore, setHighScore] = useState(0);
   const [musicEnabled, setMusicEnabled] = useState(true);
   const [selectedMode, setSelectedMode] = useState<GameMode>('CLASSIC');
@@ -177,6 +178,15 @@ export const StartScreen: React.FC<StartScreenProps> = ({ onStart, onHowToPlay, 
           </TouchableOpacity>
 
           <TouchableOpacity
+            style={styles.multiplayerButton}
+            onPress={onMultiplayer}
+            activeOpacity={0.8}
+          >
+            <Text style={styles.multiplayerButtonIcon}>👥</Text>
+            <Text style={styles.multiplayerButtonText}>MULTIPLAYER</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
             style={styles.howToPlayButton}
             onPress={onHowToPlay}
             activeOpacity={0.8}
@@ -321,8 +331,29 @@ const styles = StyleSheet.create({
     color: COLORS.neonGreen,
     letterSpacing: 4,
   },
+  multiplayerButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 12,
+    paddingHorizontal: 35,
+    paddingVertical: 14,
+    borderRadius: 25,
+    borderWidth: 1,
+    borderColor: COLORS.neonPurple,
+    backgroundColor: 'rgba(204, 0, 255, 0.1)',
+    gap: 8,
+  },
+  multiplayerButtonIcon: {
+    fontSize: 18,
+  },
+  multiplayerButtonText: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: COLORS.neonPurple,
+    letterSpacing: 2,
+  },
   howToPlayButton: {
-    marginTop: 16,
+    marginTop: 12,
     paddingHorizontal: 40,
     paddingVertical: 14,
     borderRadius: 25,

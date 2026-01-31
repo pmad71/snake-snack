@@ -12,8 +12,10 @@ export const PowerUp = memo(({ powerUp }: PowerUpProps) => {
   const opacityAnim = useRef(new Animated.Value(1)).current;
 
   const config = POWER_UPS.find(p => p.type === powerUp.type);
+  if (!config) return null;
+
   const timeLeft = POWER_UP_LIFETIME - (Date.now() - powerUp.spawnTime);
-  const isBlinking = timeLeft < 3000;
+  const isBlinking = timeLeft < 3000; // Miga ostatnie 3 sekundy
 
   useEffect(() => {
     const pulseAnimation = Animated.loop(
@@ -35,7 +37,7 @@ export const PowerUp = memo(({ powerUp }: PowerUpProps) => {
 
     pulseAnimation.start();
     return () => pulseAnimation.stop();
-  }, [pulseAnim]);
+  }, []);
 
   useEffect(() => {
     if (isBlinking) {
@@ -56,9 +58,7 @@ export const PowerUp = memo(({ powerUp }: PowerUpProps) => {
       blinkAnimation.start();
       return () => blinkAnimation.stop();
     }
-  }, [isBlinking, opacityAnim]);
-
-  if (!config) return null;
+  }, [isBlinking]);
 
   const size = GAME_CONFIG.cellSize - 2;
   const x = powerUp.x * GAME_CONFIG.cellSize + 1;

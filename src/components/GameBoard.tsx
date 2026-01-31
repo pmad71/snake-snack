@@ -44,7 +44,7 @@ export const GameBoard = memo(
           </View>
         </View>
 
-        <Text style={styles.specialVersion}>KLARA SPECIAL VERSION</Text>
+        <Text style={styles.specialVersion}>IGNACY SPECIAL VERSION</Text>
 
         <View
           style={[
@@ -112,7 +112,7 @@ const styles = StyleSheet.create({
   },
   specialVersion: {
     fontSize: 10,
-    color: COLORS.neonPink,
+    color: COLORS.neonGreen,
     letterSpacing: 2,
     marginBottom: 10,
     textTransform: 'uppercase',

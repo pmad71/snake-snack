@@ -21,7 +21,16 @@ export type Direction = 'UP' | 'DOWN' | 'LEFT' | 'RIGHT';
 
 export type GameState = 'IDLE' | 'PLAYING' | 'PAUSED' | 'GAME_OVER';
 
-export type Screen = 'START' | 'GAME' | 'GAME_OVER' | 'HOW_TO_PLAY' | 'LEADERBOARD';
+export type Screen =
+  | 'START'
+  | 'GAME'
+  | 'GAME_OVER'
+  | 'HOW_TO_PLAY'
+  | 'LEADERBOARD'
+  | 'MULTIPLAYER_MENU'
+  | 'MULTIPLAYER_LOBBY'
+  | 'MULTIPLAYER_GAME'
+  | 'MULTIPLAYER_RESULT';
 
 export type GameMode = 'CLASSIC' | 'INFINITE';
 export type Difficulty = 'EASY' | 'NORMAL' | 'HARD';
@@ -72,4 +81,45 @@ export interface LeaderboardEntry {
   mode: GameMode;
   difficulty: Difficulty;
   date: string;
+}
+
+// Multiplayer
+export type MultiplayerState =
+  | 'IDLE'
+  | 'CONNECTING'
+  | 'IN_QUEUE'
+  | 'IN_LOBBY'
+  | 'COUNTDOWN'
+  | 'PLAYING'
+  | 'GAME_OVER';
+
+export interface MultiplayerPlayer {
+  nickname: string;
+  isYou?: boolean;
+}
+
+export interface MultiplayerSnakeSegment extends Position {
+  id: string;
+}
+
+export interface MultiplayerSnake {
+  nickname: string;
+  segments: MultiplayerSnakeSegment[];
+  alive: boolean;
+  score: number;
+  color: string;
+  direction: Direction;
+}
+
+export interface MultiplayerGameState {
+  snakes: MultiplayerSnake[];
+  food: Position | null;
+  powerUp: PowerUp | null;
+  state: string;
+}
+
+export interface MultiplayerGameResult {
+  winner: string | null;
+  reason: string;
+  scores: Array<{ nickname: string; score: number; alive: boolean }>;
 }

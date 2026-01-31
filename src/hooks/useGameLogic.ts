@@ -71,7 +71,7 @@ export const useGameLogic = ({ mode = 'CLASSIC', difficulty = 'NORMAL', onShake 
   const [combo, setCombo] = useState(1);
   const comboRef = useRef(1);
   const lastEatTimeRef = useRef(0);
-  const COMBO_WINDOW = 3000;
+  const COMBO_WINDOW = 3000;  // 3 sekundy
   const MAX_COMBO = 4;
 
   const directionRef = useRef<Direction>(direction);
@@ -100,6 +100,7 @@ export const useGameLogic = ({ mode = 'CLASSIC', difficulty = 'NORMAL', onShake 
     difficultyRef.current = difficulty;
   }, [difficulty]);
 
+  // Power-up lifetime management
   useEffect(() => {
     if (!powerUp || gameState !== 'PLAYING') return;
 
@@ -112,11 +113,13 @@ export const useGameLogic = ({ mode = 'CLASSIC', difficulty = 'NORMAL', onShake 
     return () => clearInterval(checkExpiry);
   }, [powerUp, gameState]);
 
+  // Active power-up timer
   useEffect(() => {
     if (!activePowerUp || gameState !== 'PLAYING') return;
 
     const checkExpiry = setInterval(() => {
       if (Date.now() > activePowerUp.endTime) {
+        // Przywróć normalne wartości
         if (activePowerUp.type === 'SLOW' || activePowerUp.type === 'TURBO') {
           setSpeed(baseSpeedRef.current);
         } else if (activePowerUp.type === 'DOUBLE_SCORE') {
@@ -131,6 +134,7 @@ export const useGameLogic = ({ mode = 'CLASSIC', difficulty = 'NORMAL', onShake 
     return () => clearInterval(checkExpiry);
   }, [activePowerUp, gameState]);
 
+  // Magnet effect - move food towards snake head
   const snakeRef = useRef(snake);
   useEffect(() => {
     snakeRef.current = snake;
@@ -149,12 +153,14 @@ export const useGameLogic = ({ mode = 'CLASSIC', difficulty = 'NORMAL', onShake 
         let newFoodX = currentFood.x;
         let newFoodY = currentFood.y;
 
+        // Move food one step towards head
         if (currentFood.x < head.x) newFoodX++;
         else if (currentFood.x > head.x) newFoodX--;
 
         if (currentFood.y < head.y) newFoodY++;
         else if (currentFood.y > head.y) newFoodY--;
 
+        // Check if new position overlaps with snake body
         const overlapsSnake = currentSnake.some((seg, i) =>
           i > 0 && seg.x === newFoodX && seg.y === newFoodY
         );
@@ -206,16 +212,18 @@ export const useGameLogic = ({ mode = 'CLASSIC', difficulty = 'NORMAL', onShake 
     }, 16);
 
     return () => clearInterval(animationFrame);
-  }, [particles.length]);
+  }, [particles.length > 0]);
 
   const applyPowerUp = useCallback((type: PowerUpType, currentSnake: SnakeSegment[], currentFood: Position) => {
     const config = POWER_UPS.find(p => p.type === type);
     if (!config) return currentSnake;
 
     lightVibration();
+    // Trigger screen shake when collecting power-up
     onShakeRef.current?.(6);
 
     if (type === 'SLOW') {
+      // Spowolnienie - połowa prędkości
       setSpeed(prev => {
         baseSpeedRef.current = prev;
         return prev * 2;
@@ -225,32 +233,38 @@ export const useGameLogic = ({ mode = 'CLASSIC', difficulty = 'NORMAL', onShake 
         endTime: Date.now() + config.duration,
       });
     } else if (type === 'DOUBLE_SCORE') {
+      // Podwójne punkty
       scoreMultiplierRef.current = 2;
       setActivePowerUp({
         type: 'DOUBLE_SCORE',
         endTime: Date.now() + config.duration,
       });
     } else if (type === 'TRIM') {
+      // Skrócenie - usuń 30% długości
       const trimAmount = Math.floor(currentSnake.length * 0.3);
       const minLength = 3;
       const newLength = Math.max(minLength, currentSnake.length - trimAmount);
       return currentSnake.slice(0, newLength);
     } else if (type === 'GHOST') {
+      // Duch - przechodzenie przez ściany
       setActivePowerUp({
         type: 'GHOST',
         endTime: Date.now() + config.duration,
       });
     } else if (type === 'MAGNET') {
+      // Magnes - jedzenie przyciągane do głowy
       setActivePowerUp({
         type: 'MAGNET',
         endTime: Date.now() + config.duration,
       });
     } else if (type === 'SHIELD') {
+      // Tarcza - nieśmiertelność (brak kolizji z sobą)
       setActivePowerUp({
         type: 'SHIELD',
         endTime: Date.now() + config.duration,
       });
     } else if (type === 'TURBO') {
+      // Turbo - 2x szybciej
       setSpeed(prev => {
         baseSpeedRef.current = prev;
         const config = DIFFICULTIES[difficultyRef.current];
@@ -261,9 +275,11 @@ export const useGameLogic = ({ mode = 'CLASSIC', difficulty = 'NORMAL', onShake 
         endTime: Date.now() + config.duration,
       });
     } else if (type === 'MULTI_FOOD') {
+      // Multi-Food - 4 dodatkowe jedzenia
       const newExtraFoods: Position[] = [];
       for (let i = 0; i < 4; i++) {
         const pos = getRandomPosition(currentSnake, currentFood, null);
+        // Avoid overlapping with other extra foods
         while (newExtraFoods.some(f => f.x === pos.x && f.y === pos.y)) {
           pos.x = Math.floor(Math.random() * GAME_CONFIG.gridWidth);
           pos.y = Math.floor(Math.random() * GAME_CONFIG.gridHeight);
@@ -281,7 +297,7 @@ export const useGameLogic = ({ mode = 'CLASSIC', difficulty = 'NORMAL', onShake 
   }, []);
 
   const trySpawnPowerUp = useCallback((currentSnake: SnakeSegment[], currentFood: Position) => {
-    if (powerUp) return;
+    if (powerUp) return; // Już jest power-up na planszy
 
     if (Math.random() < POWER_UP_SPAWN_CHANCE) {
       const type = getRandomPowerUpType();
@@ -339,10 +355,12 @@ export const useGameLogic = ({ mode = 'CLASSIC', difficulty = 'NORMAL', onShake 
           break;
       }
 
+      // Check active power-ups
       const isGhostActive = activePowerUp?.type === 'GHOST' && Date.now() < activePowerUp.endTime;
       const isShieldActive = activePowerUp?.type === 'SHIELD' && Date.now() < activePowerUp.endTime;
       const isInfiniteMode = modeRef.current === 'INFINITE';
 
+      // Wrap through walls if Ghost, Shield, or Infinite mode
       if (isGhostActive || isShieldActive || isInfiniteMode) {
         if (newHead.x < 0) newHead.x = GAME_CONFIG.gridWidth - 1;
         if (newHead.x >= GAME_CONFIG.gridWidth) newHead.x = 0;
@@ -355,6 +373,7 @@ export const useGameLogic = ({ mode = 'CLASSIC', difficulty = 'NORMAL', onShake 
         ...currentSnake.slice(0, -1),
       ];
 
+      // Check wall collision - skip if ghost, shield, or infinite mode
       const wallCollision = !isGhostActive && !isShieldActive && !isInfiniteMode && (
         newHead.x < 0 ||
         newHead.x >= GAME_CONFIG.gridWidth ||
@@ -362,6 +381,7 @@ export const useGameLogic = ({ mode = 'CLASSIC', difficulty = 'NORMAL', onShake 
         newHead.y >= GAME_CONFIG.gridHeight
       );
 
+      // Self collision - skip if shield active
       const selfCollision = !isShieldActive && currentSnake.some((segment, i) => i > 0 && segment.x === newHead.x && segment.y === newHead.y);
 
       if (wallCollision || selfCollision) {
@@ -369,6 +389,7 @@ export const useGameLogic = ({ mode = 'CLASSIC', difficulty = 'NORMAL', onShake 
         gameOverVibration();
         soundManager.playGameOverSound();
         soundManager.stopBackgroundMusic();
+        // Strong shake on game over
         onShakeRef.current?.(12);
 
         if (gameLoopRef.current) {
@@ -379,6 +400,7 @@ export const useGameLogic = ({ mode = 'CLASSIC', difficulty = 'NORMAL', onShake 
         return currentSnake;
       }
 
+      // Check power-up collection
       setPowerUp((currentPowerUp) => {
         if (currentPowerUp && newHead.x === currentPowerUp.x && newHead.y === currentPowerUp.y) {
           const config = POWER_UPS.find(p => p.type === currentPowerUp.type);
@@ -393,6 +415,7 @@ export const useGameLogic = ({ mode = 'CLASSIC', difficulty = 'NORMAL', onShake 
         return currentPowerUp;
       });
 
+      // Helper function to handle eating logic
       const handleEat = (eatenPos: Position, isMainFood: boolean) => {
         lightVibration();
         soundManager.playEatSound();
@@ -401,6 +424,7 @@ export const useGameLogic = ({ mode = 'CLASSIC', difficulty = 'NORMAL', onShake 
         const tail = currentSnake[currentSnake.length - 1];
         newSnake.push({ ...tail, id: segmentIdRef.current++ });
 
+        // Combo system
         const timeSince = Date.now() - lastEatTimeRef.current;
         if (timeSince < COMBO_WINDOW && comboRef.current < MAX_COMBO) {
           comboRef.current++;
@@ -414,12 +438,14 @@ export const useGameLogic = ({ mode = 'CLASSIC', difficulty = 'NORMAL', onShake 
           const points = 10 * scoreMultiplierRef.current * comboRef.current;
           const newScore = prev + points;
 
+          // Update base speed using difficulty config
           const config = DIFFICULTIES[difficultyRef.current];
           baseSpeedRef.current = Math.max(
             config.minSpeed,
             baseSpeedRef.current - config.speedIncrement
           );
 
+          // Update actual speed if no slow/turbo power-up active
           if (!activePowerUp || (activePowerUp.type !== 'SLOW' && activePowerUp.type !== 'TURBO')) {
             setSpeed(baseSpeedRef.current);
           }
@@ -427,11 +453,13 @@ export const useGameLogic = ({ mode = 'CLASSIC', difficulty = 'NORMAL', onShake 
           return newScore;
         });
 
+        // Try to spawn power-up only for main food
         if (isMainFood) {
           trySpawnPowerUp(newSnake, eatenPos);
         }
       };
 
+      // Check extra foods collision (MULTI_FOOD power-up)
       setExtraFoods((currentExtraFoods) => {
         const eatenIndex = currentExtraFoods.findIndex(
           (f) => f.x === newHead.x && f.y === newHead.y
@@ -444,6 +472,7 @@ export const useGameLogic = ({ mode = 'CLASSIC', difficulty = 'NORMAL', onShake 
         return currentExtraFoods;
       });
 
+      // Check food collection
       setFood((currentFood) => {
         if (newHead.x === currentFood.x && newHead.y === currentFood.y) {
           handleEat(currentFood, true);
@@ -454,7 +483,7 @@ export const useGameLogic = ({ mode = 'CLASSIC', difficulty = 'NORMAL', onShake 
 
       return newSnake;
     });
-  }, [spawnParticles, applyPowerUp, trySpawnPowerUp, activePowerUp, powerUp]);
+  }, [checkCollision, spawnParticles, applyPowerUp, trySpawnPowerUp, activePowerUp, powerUp]);
 
   const startGame = useCallback(() => {
     const config = DIFFICULTIES[difficultyRef.current];
@@ -524,6 +553,7 @@ export const useGameLogic = ({ mode = 'CLASSIC', difficulty = 'NORMAL', onShake 
     }
   }, [gameState, score]);
 
+  // Calculate remaining time for active power-up
   const activePowerUpRemaining = activePowerUp
     ? Math.max(0, activePowerUp.endTime - Date.now())
     : 0;
