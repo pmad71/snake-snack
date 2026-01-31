@@ -45,6 +45,23 @@ export const setMusicEnabled = async (enabled: boolean): Promise<void> => {
   }
 };
 
+export const getSoundEnabled = async (): Promise<boolean> => {
+  try {
+    const value = await AsyncStorage.getItem(STORAGE_KEYS.soundEnabled);
+    return value !== 'false';
+  } catch (error) {
+    return true;
+  }
+};
+
+export const setSoundEnabled = async (enabled: boolean): Promise<void> => {
+  try {
+    await AsyncStorage.setItem(STORAGE_KEYS.soundEnabled, enabled.toString());
+  } catch (error) {
+    console.error('Error saving sound setting:', error);
+  }
+};
+
 export const getNickname = async (): Promise<string | null> => {
   try {
     return await AsyncStorage.getItem(STORAGE_KEYS.nickname);
@@ -113,6 +130,14 @@ export const addOwnedSkin = async (skinId: string): Promise<void> => {
     }
   } catch (error) {
     console.error('Error adding owned skin:', error);
+  }
+};
+
+export const setOwnedSkins = async (skins: string[]): Promise<void> => {
+  try {
+    await AsyncStorage.setItem(STORAGE_KEYS.ownedSkins, JSON.stringify(skins));
+  } catch (error) {
+    console.error('Error saving owned skins:', error);
   }
 };
 

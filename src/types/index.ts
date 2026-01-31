@@ -28,6 +28,7 @@ export type Screen =
   | 'HOW_TO_PLAY'
   | 'LEADERBOARD'
   | 'SHOP'
+  | 'SETTINGS'
   | 'MULTIPLAYER_MENU'
   | 'MULTIPLAYER_LOBBY'
   | 'MULTIPLAYER_GAME'

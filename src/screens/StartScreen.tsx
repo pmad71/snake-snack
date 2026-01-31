@@ -18,9 +18,10 @@ interface StartScreenProps {
   onLeaderboard: () => void;
   onMultiplayer: () => void;
   onShop: () => void;
+  onSettings: () => void;
 }
 
-export const StartScreen: React.FC<StartScreenProps> = ({ onStart, onHowToPlay, onLeaderboard, onMultiplayer, onShop }) => {
+export const StartScreen: React.FC<StartScreenProps> = ({ onStart, onHowToPlay, onLeaderboard, onMultiplayer, onShop, onSettings }) => {
   const [highScore, setHighScore] = useState(0);
   const [coins, setCoins] = useState(0);
   const [musicEnabled, setMusicEnabled] = useState(true);
@@ -89,6 +90,9 @@ export const StartScreen: React.FC<StartScreenProps> = ({ onStart, onHowToPlay, 
         </TouchableOpacity>
         <TouchableOpacity style={styles.musicButton} onPress={toggleMusic}>
           <Text style={styles.musicButtonText}>{musicEnabled ? '🎵' : '🔇'}</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.settingsButton} onPress={onSettings}>
+          <Text style={styles.settingsButtonText}>⚙️</Text>
         </TouchableOpacity>
       </View>
       <View style={styles.content}>
@@ -464,6 +468,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   musicButtonText: {
+    fontSize: 20,
+  },
+  settingsButton: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    borderWidth: 1,
+    borderColor: COLORS.textSecondary,
+    backgroundColor: 'rgba(128, 128, 128, 0.1)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  settingsButtonText: {
     fontSize: 20,
   },
 });

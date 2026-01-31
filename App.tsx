@@ -7,6 +7,7 @@ import { GameOverScreen } from './src/screens/GameOverScreen';
 import { HowToPlayScreen } from './src/screens/HowToPlayScreen';
 import { LeaderboardScreen } from './src/screens/LeaderboardScreen';
 import { ShopScreen } from './src/screens/ShopScreen';
+import { SettingsScreen } from './src/screens/SettingsScreen';
 import { MultiplayerMenuScreen } from './src/screens/MultiplayerMenuScreen';
 import { MultiplayerLobbyScreen } from './src/screens/MultiplayerLobbyScreen';
 import { MultiplayerGameScreen } from './src/screens/MultiplayerGameScreen';
@@ -87,6 +88,10 @@ export default function App() {
     setCurrentScreen('SHOP');
   };
 
+  const handleSettings = () => {
+    setCurrentScreen('SETTINGS');
+  };
+
   // Multiplayer handlers
   const handleMultiplayerJoinLobby = (roomCode: string, players: string[], isHost: boolean) => {
     setMultiplayerRoomCode(roomCode);
@@ -120,6 +125,7 @@ export default function App() {
             onLeaderboard={handleLeaderboard}
             onMultiplayer={handleMultiplayer}
             onShop={handleShop}
+            onSettings={handleSettings}
           />
         );
       case 'GAME':
@@ -150,6 +156,8 @@ export default function App() {
         return <LeaderboardScreen onBack={handleBackToMenu} />;
       case 'SHOP':
         return <ShopScreen onBack={handleBackToMenu} />;
+      case 'SETTINGS':
+        return <SettingsScreen onBack={handleBackToMenu} />;
       case 'MULTIPLAYER_MENU':
         return (
           <MultiplayerMenuScreen
@@ -198,6 +206,7 @@ export default function App() {
             onLeaderboard={handleLeaderboard}
             onMultiplayer={handleMultiplayer}
             onShop={handleShop}
+            onSettings={handleSettings}
           />
         );
     }
