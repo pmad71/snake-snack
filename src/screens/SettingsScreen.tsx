@@ -8,8 +8,51 @@ import {
   TextInput,
   Alert,
   ScrollView,
+  Share,
 } from 'react-native';
-import * as Clipboard from 'expo-clipboard';
+
+// Base64 encoding/decoding for React Native
+const base64Chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
+
+const encodeBase64 = (str: string): string => {
+  let output = '';
+  let i = 0;
+  const input = encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, (_, p1) =>
+    String.fromCharCode(parseInt(p1, 16))
+  );
+  while (i < input.length) {
+    const chr1 = input.charCodeAt(i++);
+    const chr2 = input.charCodeAt(i++);
+    const chr3 = input.charCodeAt(i++);
+    const enc1 = chr1 >> 2;
+    const enc2 = ((chr1 & 3) << 4) | (chr2 >> 4);
+    const enc3 = isNaN(chr2) ? 64 : ((chr2 & 15) << 2) | (chr3 >> 6);
+    const enc4 = isNaN(chr3) ? 64 : chr3 & 63;
+    output += base64Chars.charAt(enc1) + base64Chars.charAt(enc2) + base64Chars.charAt(enc3) + base64Chars.charAt(enc4);
+  }
+  return output;
+};
+
+const decodeBase64 = (str: string): string => {
+  let output = '';
+  let i = 0;
+  const input = str.replace(/[^A-Za-z0-9+/=]/g, '');
+  while (i < input.length) {
+    const enc1 = base64Chars.indexOf(input.charAt(i++));
+    const enc2 = base64Chars.indexOf(input.charAt(i++));
+    const enc3 = base64Chars.indexOf(input.charAt(i++));
+    const enc4 = base64Chars.indexOf(input.charAt(i++));
+    const chr1 = (enc1 << 2) | (enc2 >> 4);
+    const chr2 = ((enc2 & 15) << 4) | (enc3 >> 2);
+    const chr3 = ((enc3 & 3) << 6) | enc4;
+    output += String.fromCharCode(chr1);
+    if (enc3 !== 64) output += String.fromCharCode(chr2);
+    if (enc4 !== 64) output += String.fromCharCode(chr3);
+  }
+  return decodeURIComponent(
+    output.split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join('')
+  );
+};
 import { COLORS } from '../constants/game';
 import {
   getCoins,
@@ -87,7 +130,7 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({ onBack }) => {
 
       setCurrentData(data);
       const jsonString = JSON.stringify(data);
-      const code = btoa(jsonString);
+      const code = encodeBase64(jsonString);
       setExportCode(code);
       setShowExportModal(true);
     } catch (error) {
@@ -95,21 +138,20 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({ onBack }) => {
     }
   };
 
-  const copyToClipboard = async () => {
-    await Clipboard.setStringAsync(exportCode);
-    Alert.alert('Skopiowano!', 'Kod zapasowy został skopiowany do schowka. Zapisz go w bezpiecznym miejscu!');
+  const shareCode = async () => {
+    try {
+      await Share.share({
+        message: exportCode,
+        title: 'Snake Neon - Kod Backupu',
+      });
+    } catch (error) {
+      Alert.alert('Błąd', 'Nie udało się udostępnić kodu');
+    }
   };
 
   const handleImport = () => {
     setImportCode('');
     setShowImportModal(true);
-  };
-
-  const pasteFromClipboard = async () => {
-    const text = await Clipboard.getStringAsync();
-    if (text) {
-      setImportCode(text);
-    }
   };
 
   const restoreData = async () => {
@@ -119,7 +161,7 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({ onBack }) => {
     }
 
     try {
-      const jsonString = atob(importCode.trim());
+      const jsonString = decodeBase64(importCode.trim());
       const data: BackupData = JSON.parse(jsonString);
 
       if (!data.version || !data.skins) {
@@ -250,8 +292,8 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({ onBack }) => {
             </Text>
 
             <View style={styles.modalButtons}>
-              <TouchableOpacity style={styles.modalButtonPrimary} onPress={copyToClipboard}>
-                <Text style={styles.modalButtonPrimaryText}>📋 KOPIUJ</Text>
+              <TouchableOpacity style={styles.modalButtonPrimary} onPress={shareCode}>
+                <Text style={styles.modalButtonPrimaryText}>📤 UDOSTĘPNIJ</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={styles.modalButtonSecondary}
@@ -286,9 +328,7 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({ onBack }) => {
               />
             </View>
 
-            <TouchableOpacity style={styles.pasteButton} onPress={pasteFromClipboard}>
-              <Text style={styles.pasteButtonText}>📋 Wklej ze schowka</Text>
-            </TouchableOpacity>
+            <Text style={styles.pasteHint}>Przytrzymaj pole tekstowe aby wkleić kod</Text>
 
             <View style={styles.modalButtons}>
               <TouchableOpacity style={styles.modalButtonPrimary} onPress={restoreData}>
@@ -496,13 +536,11 @@ const styles = StyleSheet.create({
     minHeight: 80,
     textAlignVertical: 'top',
   },
-  pasteButton: {
-    alignItems: 'center',
-    paddingVertical: 10,
+  pasteHint: {
+    fontSize: 12,
+    color: COLORS.textSecondary,
+    textAlign: 'center',
     marginBottom: 16,
-  },
-  pasteButtonText: {
-    fontSize: 14,
-    color: COLORS.neonBlue,
+    fontStyle: 'italic',
   },
 });
